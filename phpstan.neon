@@ -1,0 +1,34 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 9
+    paths:
+        - app
+        - config
+        - database
+        - routes
+
+    # Exclude certain paths
+    excludePaths:
+        - bootstrap
+        - storage
+        - vendor
+        - node_modules
+
+    # Additional strict rules
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+    checkMissingCallableSignature: true
+    checkMissingTypehints: true
+    checkUninitializedProperties: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkImplicitMixed: true
+
+    # Ignore common Laravel patterns
+    ignoreErrors:
+        - '#PHPDoc tag @var#'
+
+    # Report unused private elements
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false

@@ -14,5 +14,5 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('orders', OrderController::class)->except(['update']);
 
 // Custom route for updating order status
-Route::patch('orders/{id}/status', [OrderController::class, 'updateStatus'])
+Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])
     ->name('orders.update-status');

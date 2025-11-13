@@ -217,7 +217,8 @@ class OrderService implements OrderServiceInterface
             OrderStatus::CANCELLED => [],
         };
 
-        if (!in_array($to, $validTransitions, true)) {
+        // PHP 8.4: Use array_any() to check if transition is valid
+        if (!array_any($validTransitions, fn(OrderStatus $valid) => $valid === $to)) {
             throw new InvalidOrderStatusTransitionException($from, $to);
         }
     }
@@ -229,11 +230,14 @@ class OrderService implements OrderServiceInterface
      */
     private function validateOrderCanBeDeleted(Order $order): void
     {
-        $reason = match ($order->status) {
-            OrderStatus::PROCESSING => 'Order is currently being processed',
-            OrderStatus::FULFILLED => 'Order has been fulfilled',
-            default => null,
-        };
+        // PHP 8.4: Define deletion rules as array for better maintainability
+        $deletionRules = [
+            OrderStatus::PROCESSING->value => 'Order is currently being processed',
+            OrderStatus::FULFILLED->value => 'Order has been fulfilled',
+        ];
+
+        // PHP 8.4: Use array_find to get the reason for the current status
+        $reason = array_find($deletionRules, fn($reason, $statusValue) => $statusValue === $order->status->value);
 
         if ($reason !== null) {
             throw new OrderCannotBeDeletedException($reason);

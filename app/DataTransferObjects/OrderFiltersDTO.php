@@ -36,19 +36,29 @@ final readonly class OrderFiltersDTO
      */
     public static function fromArray(array $filters): self
     {
+        // PHP 8.4: Define filter mappings for cleaner code
+        $filterMappings = [
+            'status' => fn($value) => is_string($value) ? OrderStatus::from($value) : null,
+            'search' => fn($value) => is_string($value) ? $value : null,
+            'page' => fn($value) => is_numeric($value) ? (int) $value : null,
+            'per_page' => fn($value) => is_numeric($value) ? (int) $value : null,
+        ];
+
+        // PHP 8.4: Use array_find_key to find the first invalid filter key
+        $firstInvalidKey = array_find_key(
+            $filters,
+            fn($value, $key) => !array_key_exists($key, $filterMappings)
+        );
+
+        if ($firstInvalidKey !== null) {
+            throw new \InvalidArgumentException("Invalid filter key: {$firstInvalidKey}");
+        }
+
         return new self(
-            status: isset($filters['status']) && is_string($filters['status'])
-                ? OrderStatus::from($filters['status'])
-                : null,
-            search: isset($filters['search']) && is_string($filters['search'])
-                ? $filters['search']
-                : null,
-            page: isset($filters['page']) && is_numeric($filters['page'])
-                ? (int) $filters['page']
-                : null,
-            perPage: isset($filters['per_page']) && is_numeric($filters['per_page'])
-                ? (int) $filters['per_page']
-                : null,
+            status: isset($filters['status']) ? $filterMappings['status']($filters['status']) : null,
+            search: isset($filters['search']) ? $filterMappings['search']($filters['search']) : null,
+            page: isset($filters['page']) ? $filterMappings['page']($filters['page']) : null,
+            perPage: isset($filters['per_page']) ? $filterMappings['per_page']($filters['per_page']) : null,
         );
     }
 

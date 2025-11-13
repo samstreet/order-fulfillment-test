@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -55,29 +56,27 @@ class OrderController extends Controller
     /**
      * Display the specified order.
      */
-    public function show(int $id): JsonResponse
+    public function show(Order $order): JsonResponse
     {
-        $order = $this->orderService->getOrderById($id);
-
-        return (new OrderResource($order))->response();
+        return (new OrderResource($order->load('items')))->response();
     }
 
     /**
      * Update the status of the specified order.
      */
-    public function updateStatus(UpdateOrderStatusRequest $request, int $id): JsonResponse
+    public function updateStatus(UpdateOrderStatusRequest $request, Order $order): JsonResponse
     {
-        $order = $this->orderService->updateOrderStatus($id, $request->getStatus());
+        $updatedOrder = $this->orderService->updateOrderStatus($order->id, $request->getStatus());
 
-        return (new OrderResource($order))->response();
+        return (new OrderResource($updatedOrder))->response();
     }
 
     /**
      * Remove the specified order.
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Order $order): JsonResponse
     {
-        $this->orderService->deleteOrder($id);
+        $this->orderService->deleteOrder($order->id);
 
         return response()->json([
             'message' => 'Order deleted successfully',

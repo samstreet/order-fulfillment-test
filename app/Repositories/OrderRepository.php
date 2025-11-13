@@ -40,10 +40,13 @@ class OrderRepository implements OrderRepositoryInterface
             // This prevents malicious input like "%' OR 1=1 --" from breaking the query
             $searchTerm = $this->escapeLikeWildcards(trim($filters->search));
 
-            $query->where(function (Builder $q) use ($searchTerm): void {
-                $q->where('order_number', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('customer_name', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('customer_email', 'LIKE', "%{$searchTerm}%");
+            // PHP 8.4: Define searchable fields as array for better maintainability
+            $searchableFields = ['order_number', 'customer_name', 'customer_email'];
+
+            $query->where(function (Builder $q) use ($searchTerm, $searchableFields): void {
+                foreach ($searchableFields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$searchTerm}%");
+                }
             });
         }
 
@@ -119,6 +122,8 @@ class OrderRepository implements OrderRepositoryInterface
      *
      * This method escapes backslashes, percent signs, and underscores
      * which are special characters in SQL LIKE clauses.
+     *
+     * PHP 8.4 note: Could use str_replace with associative array, but current approach is clear.
      *
      * @param string $value The value to escape
      * @return string The escaped value

@@ -62,15 +62,42 @@ class CreateOrderItemDTOTest extends TestCase
         $this->assertSame(59.97, $dto->calculateSubtotal());
     }
 
-    public function test_it_is_readonly(): void
+    public function test_property_hooks_validate_product_name(): void
     {
         $dto = new CreateOrderItemDTO(
-            productName: 'Test',
+            productName: 'Valid Product',
             quantity: 1,
             unitPrice: 10.00
         );
 
-        $this->expectException(\Error::class);
-        $dto->productName = 'New Name';
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Product name cannot be empty');
+        $dto->productName = '';
+    }
+
+    public function test_property_hooks_validate_quantity(): void
+    {
+        $dto = new CreateOrderItemDTO(
+            productName: 'Product',
+            quantity: 1,
+            unitPrice: 10.00
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Quantity must be at least 1');
+        $dto->quantity = 0;
+    }
+
+    public function test_property_hooks_validate_unit_price(): void
+    {
+        $dto = new CreateOrderItemDTO(
+            productName: 'Product',
+            quantity: 1,
+            unitPrice: 10.00
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unit price must be at least 0.01');
+        $dto->unitPrice = 0.00;
     }
 }

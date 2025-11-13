@@ -105,14 +105,57 @@ class CreateOrderDTOTest extends TestCase
         $this->assertEmpty($dto->items);
     }
 
-    public function test_it_is_readonly(): void
+    public function test_property_hooks_validate_input(): void
+    {
+        // Test valid construction
+        $dto = new CreateOrderDTO(
+            customerName: 'Test User',
+            customerEmail: 'test@example.com'
+        );
+
+        $this->assertSame('Test User', $dto->customerName);
+        $this->assertSame('test@example.com', $dto->customerEmail);
+
+        // Test property hook validation - empty name
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Customer name cannot be empty');
+        $dto->customerName = '';
+    }
+
+    public function test_property_hooks_validate_email(): void
     {
         $dto = new CreateOrderDTO(
             customerName: 'Test User',
             customerEmail: 'test@example.com'
         );
 
-        $this->expectException(\Error::class);
-        $dto->customerName = 'New Name';
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid email format');
+        $dto->customerEmail = 'invalid-email';
+    }
+
+    public function test_property_hooks_validate_notes_length(): void
+    {
+        $dto = new CreateOrderDTO(
+            customerName: 'Test User',
+            customerEmail: 'test@example.com'
+        );
+
+        $longNotes = str_repeat('a', 1001);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Notes cannot exceed 1000 characters');
+        $dto->notes = $longNotes;
+    }
+
+    public function test_property_hooks_validate_items_array(): void
+    {
+        $dto = new CreateOrderDTO(
+            customerName: 'Test User',
+            customerEmail: 'test@example.com'
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('All items must be CreateOrderItemDTO instances');
+        $dto->items = ['invalid item'];
     }
 }

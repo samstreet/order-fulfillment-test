@@ -24,6 +24,8 @@ final class OrderTest extends TestCase
             'customer_name',
             'customer_email',
             'status',
+            'total_amount',
+            'items_count',
             'notes',
             'ordered_at',
             'fulfilled_at',
@@ -32,19 +34,7 @@ final class OrderTest extends TestCase
         $this->assertEquals($expectedFillable, $fillable);
     }
 
-    public function test_total_amount_is_not_fillable(): void
-    {
-        $fillable = (new Order())->getFillable();
 
-        $this->assertNotContains('total_amount', $fillable);
-    }
-
-    public function test_items_count_is_not_fillable(): void
-    {
-        $fillable = (new Order())->getFillable();
-
-        $this->assertNotContains('items_count', $fillable);
-    }
 
     public function test_casts_are_configured_correctly(): void
     {

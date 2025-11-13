@@ -34,12 +34,12 @@ class OrderObserver
     private function updateOrderTotals(Order $order): void
     {
         /** @phpstan-ignore-next-line */
-        $totalAmount = (string) $order->items()->sum('subtotal');
+        $totalAmount = (float) $order->items()->sum('subtotal');
         /** @phpstan-ignore-next-line */
         $itemsCount = $order->items()->count();
 
         // Only update if values have changed to avoid infinite loops
-        if ($order->total_amount !== $totalAmount || $order->items_count !== $itemsCount) {
+        if ((float) $order->total_amount !== $totalAmount || $order->items_count !== $itemsCount) {
             $order->total_amount = $totalAmount;
             $order->items_count = $itemsCount;
             $order->saveQuietly();

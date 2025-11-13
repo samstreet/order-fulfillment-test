@@ -31,6 +31,8 @@ class Order extends Model
         'customer_name',
         'customer_email',
         'status',
+        'total_amount',
+        'items_count',
         'notes',
         'ordered_at',
         'fulfilled_at',

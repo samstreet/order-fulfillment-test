@@ -6,7 +6,24 @@
     <rule ref="PSR12"/>
 
     <!-- Additional rules for strict type declarations -->
-    <rule ref="Generic.PHP.RequireStrictTypes"/>
+    <rule ref="Generic.PHP.RequireStrictTypes">
+        <!-- Exclude Laravel scaffold files from strict_types requirement -->
+        <exclude-pattern>*/config/*</exclude-pattern>
+        <exclude-pattern>*/routes/*</exclude-pattern>
+        <exclude-pattern>*/database/migrations/0001_01_01_*</exclude-pattern>
+        <exclude-pattern>*/database/factories/UserFactory.php</exclude-pattern>
+        <exclude-pattern>*/database/seeders/DatabaseSeeder.php</exclude-pattern>
+        <exclude-pattern>*/app/Http/Controllers/Controller.php</exclude-pattern>
+        <exclude-pattern>*/tests/Unit/ExampleTest.php</exclude-pattern>
+        <exclude-pattern>*/tests/Feature/ExampleTest.php</exclude-pattern>
+        <exclude-pattern>*/tests/TestCase.php</exclude-pattern>
+        <exclude-pattern>*/app/Models/User.php</exclude-pattern>
+    </rule>
+
+    <!-- Allow snake_case test method names (PHPUnit convention) -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
 
     <!-- Files to check -->
     <file>app</file>

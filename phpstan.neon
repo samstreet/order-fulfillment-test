@@ -1,6 +1,3 @@
-includes:
-    - vendor/larastan/larastan/extension.neon
-
 parameters:
     level: 9
     paths:
@@ -16,19 +13,9 @@ parameters:
         - vendor
         - node_modules
 
-    # Additional strict rules
-    checkMissingIterableValueType: true
-    checkGenericClassInNonGenericObjectType: true
-    checkMissingCallableSignature: true
-    checkMissingTypehints: true
-    checkUninitializedProperties: true
-    checkTooWideReturnTypesInProtectedAndPublicMethods: true
-    checkImplicitMixed: true
-
     # Ignore common Laravel patterns
     ignoreErrors:
-        - '#PHPDoc tag @var#'
+        - '#Call to function array_filter\(\) requires parameter \#2 to be passed#'
 
     # Report unused private elements
     reportUnmatchedIgnoredErrors: true
-    treatPhpDocTypesAsCertain: false

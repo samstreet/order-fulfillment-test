@@ -217,7 +217,8 @@ const {
   updatingOrder,
   updateOrderStatus,
   deleteOrder,
-  canDeleteOrder
+  canDeleteOrder,
+  fetchOrders
 } = useOrders()
 
 // Filters
@@ -324,6 +325,8 @@ const formatDate = (dateString: string): string => {
 // Override fetchOrders to handle pagination
 const typedFetchOrders = async (filtersOverride?: OrderFilters) => {
   const params = filtersOverride || filters.value
+  loading.value = true
+  error.value = null
 
   try {
     // We need to make the axios call directly to get the full response with meta
@@ -331,8 +334,10 @@ const typedFetchOrders = async (filtersOverride?: OrderFilters) => {
     const response = await axios.get('/api/orders', { params })
     orders.value = response.data.data || response.data
     pagination.value = response.data.meta || null
-  } catch (err) {
-    // Error handling is done in the composable
+  } catch (err: any) {
+    error.value = err.response?.data?.message || 'Failed to load orders'
+  } finally {
+    loading.value = false
   }
 }
 

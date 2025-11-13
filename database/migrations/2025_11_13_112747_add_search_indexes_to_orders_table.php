@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Schema;
  * This migration adds indexes to columns frequently used in search
  * queries, significantly improving query performance (CRITICAL FIX #5).
  */
+
 return new class extends Migration
 {
     /**

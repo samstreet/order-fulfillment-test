@@ -102,7 +102,7 @@ class OrderApiTest extends TestCase
         Order::factory()->count(2)->create(['status' => OrderStatus::PENDING]);
         Order::factory()->count(3)->create(['status' => OrderStatus::PROCESSING]);
 
-        $response = $this->getJson('/api/orders?status='.OrderStatus::PENDING->value);
+        $response = $this->getJson('/api/orders?status=' . OrderStatus::PENDING->value);
 
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data');

@@ -328,6 +328,49 @@ sudo chmod -R 775 storage bootstrap/cache
 ./vendor/bin/sail artisan view:clear
 ```
 
+## Assumptions Made
+
+This implementation makes several assumptions to deliver a focused, high-quality solution within time constraints:
+
+### Technical Assumptions
+- **PHP 8.4 Experimental Features**: Leveraged property hooks and new array functions, assuming production readiness despite experimental status
+- **SQLite for Development**: Used SQLite for zero-configuration simplicity, with Docker MySQL for production-like environments
+- **Inertia.js Integration**: Chose Inertia.js for seamless Laravel-Vue integration, assuming familiarity with the pattern
+- **Client-Side Pagination**: Implemented pagination on the frontend for demo purposes, accepting the performance implications
+
+### Business Assumptions
+- **Order Status Workflow**: Implemented a simple linear status progression (pending → processing → fulfilled/cancelled) without complex business rules
+- **Single User Context**: No authentication/authorization - assumes single-user or admin context
+- **Order Items**: Focused on order management rather than detailed item-level operations
+- **Real-time Updates**: No WebSocket integration - status changes require manual refresh
+
+### Scope Assumptions
+- **CRUD Operations**: Full CRUD implemented but simplified (no bulk operations, complex validations)
+- **Search Functionality**: Basic text search across key fields, no advanced filtering or faceted search
+- **Error Handling**: Comprehensive error handling but no user-friendly error pages or recovery flows
+
+## Challenges Faced
+
+### PHP 8.4 Experimental Features
+- **Property Hooks**: Required careful implementation as the syntax evolved during development
+- **Array Functions**: Limited documentation and community examples for new functions like `array_any()` and `array_find()`
+- **IDE Support**: Limited IDE support for experimental features required manual testing and validation
+
+### Vue 3 + TypeScript Integration
+- **Type Safety**: Balancing Vue 3's reactivity with TypeScript's strict typing, especially with async composables
+- **Mocking Complexity**: Setting up proper axios mocking for component tests with dynamic query parameters
+- **Async Data Loading**: Coordinating component mounting, API calls, and test assertions
+
+### Architecture Decisions
+- **Service Layer Granularity**: Determining the right level of abstraction between controllers and services
+- **DTO vs Request Objects**: Balancing between FormRequest validation and DTO immutability
+- **Observer Pattern**: Implementing automatic total calculations without circular dependencies
+
+### Testing Strategy
+- **Async Component Testing**: Properly awaiting Vue component lifecycle and API calls in tests
+- **Database Transaction Testing**: Ensuring test isolation while testing complex business logic
+- **Mock vs Real API Calls**: Balancing test speed with realistic integration testing
+
 ## Contributing
 
 1. Follow TDD approach: Write tests first

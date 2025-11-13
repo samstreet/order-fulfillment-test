@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Schema;
  * This table uses database auto-increment to guarantee unique sequential
  * order numbers without race conditions (CRITICAL FIX #2).
  */
+
 return new class extends Migration
 {
     /**
